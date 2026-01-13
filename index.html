@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Corrida de Pontos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #00a86b;
+      color: white;
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 20px;
+    }
+
+    .top-wrapper {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin: 20px 0;
+    }
+
+    .top-card {
+      background: #007d52;
+      border-radius: 10px;
+      padding: 10px 20px;
+      width: 180px;
+    }
+
+    .top-card img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid gold;
+    }
+
+    .top-card h2 {
+      margin: 10px 0 5px 0;
+    }
+
+    .top-card p {
+      margin: 0;
+    }
+
+    table {
+      margin: 0 auto;
+      margin-top: 10px;
+      border-collapse: collapse;
+      width: 60%;
+      background: #007d52;
+    }
+
+    th, td {
+      padding: 8px 12px;
+      border-bottom: 1px solid #294a9b;
+    }
+
+    th {
+      background: #fcab10;
+    }
+
+    .btn-area {
+      margin-top: 15px;
+    }
+
+    button {
+      margin: 5px;
+      padding: 8px 14px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background: #f0c330;
+      color: #000;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #ffd54a;
+    }
+  </style>
+</head>
+<body>
+  <h1>Corrida de Pontos</h1>
+
+  <!-- Cards de 1º e 2º lugar -->
+  <div class="top-wrapper">
+    <div class="top-card" id="top1-card">
+      <h2>1º Lugar</h2>
+      <img id="top1-img" src="" alt="Primeiro lugar" />
+      <p id="top1-name"></p>
+      <p id="top1-score"></p>
+    </div>
+
+    <div class="top-card" id="top2-card">
+      <h2>2º Lugar</h2>
+      <img id="top2-img" src="" alt="Segundo lugar" />
+      <p id="top2-name"></p>
+      <p id="top2-score"></p>
+    </div>
+  </div>
+
+  <!-- Tabela com todos os jogadores -->
+  <table id="ranking-table">
+    <thead>
+      <tr>
+        <th>Posição</th>
+        <th>Nome</th>
+        <th>Pontos</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Linhas geradas via JavaScript -->
+    </tbody>
+  </table>
+
+  <!-- Botões para testar aumento de pontos -->
+  <div class="btn-area" id="buttons-area">
+    <!-- Botões gerados via JavaScript -->
+  </div>
+
+  <script>
+    // Lista de jogadores
+    let jogadores = [
+      {
+        nome: "Conciliação",
+        pontos: 0,
+        imagem: "https://via.placeholder.com/100x100.png?text=Conciliação"
+      },
+      {
+        nome: "Vendas",
+        pontos: 0,
+        imagem: "https://via.placeholder.com/100x100.png?text=Vendas"
+      }
+    ];
+
+    // Função para ordenar, atualizar tabela e imagens do 1º e 2º lugar
+    function atualizarRanking() {
+      // Ordena em ordem decrescente de pontos
+      jogadores.sort((a, b) => b.pontos - a.pontos);
+
+      // Atualiza tabela
+      const tbody = document.querySelector("#ranking-table tbody");
+      tbody.innerHTML = "";
+      jogadores.forEach((jogador, index) => {
+        const tr = document.createElement("tr");
+
+        const tdPos = document.createElement("td");
+        tdPos.textContent = index + 1;
+
+        const tdNome = document.createElement("td");
+        tdNome.textContent = jogador.nome;
+
+        const tdPontos = document.createElement("td");
+        tdPontos.textContent = jogador.pontos;
+
+        tr.appendChild(tdPos);
+        tr.appendChild(tdNome);
+        tr.appendChild(tdPontos);
+        tbody.appendChild(tr);
+      });
+
+      // Atualiza cards de 1º e 2º lugar (se existirem)
+      const primeiro = jogadores[0];
+      const segundo = jogadores[1];
+
+      if (primeiro) {
+        document.getElementById("top1-img").src = primeiro.imagem;
+        document.getElementById("top1-name").textContent = primeiro.nome;
+        document.getElementById("top1-score").textContent = "Pontos: " + primeiro.pontos;
+      }
+
+      if (segundo) {
+        document.getElementById("top2-img").src = segundo.imagem;
+        document.getElementById("top2-name").textContent = segundo.nome;
+        document.getElementById("top2-score").textContent = "Pontos: " + segundo.pontos;
+      }
+    }
+
+    // Cria botões para adicionar pontos (ligados ao NOME, não ao índice atual)
+    function criarBotoes() {
+      const area = document.getElementById("buttons-area");
+      area.innerHTML = "";
+
+      jogadores.forEach((jogadorOriginal) => {
+        const btn = document.createElement("button");
+        btn.textContent = "Adicionar +1 ponto para " + jogadorOriginal.nome;
+
+        // guarda o nome do jogador "dono" deste botão
+        const nomeDono = jogadorOriginal.nome;
+
+        btn.addEventListener("click", () => {
+          // procura o jogador pelo nome (mesmo que o array esteja ordenado diferente)
+          const jogador = jogadores.find(j => j.nome === nomeDono);
+          if (jogador) {
+            jogador.pontos += 1;
+            atualizarRanking(); // reordena e redesenha tudo
+          }
+        });
+
+        area.appendChild(btn);
+      });
+    }
+
+    // Inicializa
+    criarBotoes();
+    atualizarRanking();
+  </script>
+</body>
+</html>
